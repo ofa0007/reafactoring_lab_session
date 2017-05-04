@@ -26,6 +26,8 @@ import java.util.Hashtable;
 
 import lanSimulation.internals.Node;
 import lanSimulation.internals.Packet;
+import lanSimulation.internals.Printer;
+import lanSimulation.internals.WorkStation;
 
 /**
  * A <em>Network</em> represents the basic data stucture for simulating a Local
@@ -48,7 +50,7 @@ public class Network {
 	 * Maps the names of workstations on the actual workstations. Used to
 	 * initiate the requests for the network.
 	 */
-	private Hashtable workstations_;
+	private Hashtable nodes_;
 
 	/**
 	 * Construct a <em>Network</em> suitable for holding #size Workstations.
@@ -61,7 +63,7 @@ public class Network {
 		assert size > 0;
 		initPtr_ = this;
 		firstNode_ = null;
-		workstations_ = new Hashtable(size, 1.0f);
+		nodes_ = new Hashtable(size, 1.0f);
 		assert isInitialized();
 		assert !consistentNetwork();
 	}
@@ -82,20 +84,21 @@ public class Network {
 	public static Network DefaultExample() {
 		Network network = new Network(2);
 
-		Node wsFilip = new Node(Node.WORKSTATION, "Filip");
-		Node n1 = new Node(Node.NODE, "n1");
-		Node wsHans = new Node(Node.WORKSTATION, "Hans");
-		Node prAndy = new Node(Node.PRINTER, "Andy");
+		Node wsFilip = new WorkStation("Filip");
+		Node n1 = new Node("n1");
+		Node wsHans = new WorkStation("Hans");
+		Node prAndy = new Printer("Andy");
 
 		wsFilip.nextNode_ = n1;
 		n1.nextNode_ = wsHans;
 		wsHans.nextNode_ = prAndy;
 		prAndy.nextNode_ = wsFilip;
 
-		network.workstations_.put(wsFilip.name_, wsFilip);
-		network.workstations_.put(wsHans.name_, wsHans);
+		network.nodes_.put(wsFilip.name_, wsFilip);
+		network.nodes_.put(wsHans.name_, wsHans);
 		network.firstNode_ = wsFilip;
 
+		
 		assert network.isInitialized();
 		assert network.consistentNetwork();
 		return network;
@@ -119,7 +122,7 @@ public class Network {
 		Node n;
 
 		assert isInitialized();
-		n = (Node) workstations_.get(ws);
+		n = (Node) nodes_.get(ws);
 		if (n == null) {
 			return false;
 		} else {
@@ -141,9 +144,9 @@ public class Network {
 		Enumeration iter;
 		Node currentNode;
 		int printersFound = 0, workstationsFound = 0;
-		Hashtable encountered = new Hashtable(workstations_.size() * 2, 1.0f);
+		Hashtable encountered = new Hashtable(nodes_.size() * 2, 1.0f);
 
-		if (workstations_.isEmpty()) {
+		if (nodes_.isEmpty()) {
 			return false;
 		}
 		;
@@ -152,7 +155,7 @@ public class Network {
 		}
 		;
 		// verify whether all registered workstations are indeed workstations
-		iter = workstations_.elements();
+		iter = nodes_.elements();
 		while (iter.hasMoreElements()) {
 			currentNode = (Node) iter.nextElement();
 			if (currentNode.type_ != Node.WORKSTATION) {
@@ -187,7 +190,7 @@ public class Network {
 			return false;
 		}
 		;// does not contain a printer
-		if (workstationsFound != workstations_.size()) {
+		if (workstationsFound != nodes_.size()) {
 			return false;
 		}
 		; // not all workstations are registered
@@ -284,7 +287,7 @@ public class Network {
 		Node startNode, currentNode;
 		Packet packet = new Packet(document, workstation, printer);
 
-		startNode = (Node) workstations_.get(workstation);
+		startNode = (Node) nodes_.get(workstation);
 
 		startNode.logPacketPass(report);
 
@@ -311,8 +314,6 @@ public class Network {
 		return result;
 	}
 
-	
-
 	/**
 	 * Return a printable representation of #receiver.
 	 * <p>
@@ -321,7 +322,7 @@ public class Network {
 	 */
 	public String toString() {
 		assert isInitialized();
-		StringBuffer buf = new StringBuffer(30 * workstations_.size());
+		StringBuffer buf = new StringBuffer(30 * nodes_.size());
 		firstNode_.printOn(this, buf);
 		return buf.toString();
 	}
