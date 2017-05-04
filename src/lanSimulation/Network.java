@@ -359,7 +359,7 @@ public class Network {
 						author = document.message_.substring(8, 16);
 					}
 					;
-					writeAccounting(report, author, title, "ASCII");
+					writeAccounting(report, author, title, "ASCII Print");
 				}
 				;
 			} catch (IOException exc) {
@@ -385,7 +385,7 @@ public class Network {
 		report.write("' -- title = '");
 		report.write(title);
 		report.write("'\n");
-		report.write(">>> " + doctype + " Print job delivered.\n\n");
+		report.write(">>> " + doctype + " job delivered.\n\n");
 		report.flush();
 	}
 
