@@ -270,8 +270,7 @@ public class Network {
 	 */
 	public boolean requestWorkstationPrintsDocument(String workstation, String document, String printer,
 			Writer report) {
-		assert consistentNetwork() & 
-			   hasWorkstation(workstation);
+		assert consistentNetwork() & hasWorkstation(workstation);
 
 		try {
 			report.write("'");
@@ -284,7 +283,7 @@ public class Network {
 		} catch (IOException exc) {
 			// just ignore
 		}
-		;
+		
 
 		boolean result = false;
 		Node startNode, currentNode;
@@ -300,7 +299,7 @@ public class Network {
 		} catch (IOException exc) {
 			// just ignore
 		}
-		;
+		
 		currentNode = startNode.nextNode_;
 		while ((!packet.destination_.equals(currentNode.name_)) & (!packet.origin_.equals(currentNode.name_))) {
 			try {
@@ -311,10 +310,10 @@ public class Network {
 			} catch (IOException exc) {
 				// just ignore
 			}
-			;
+			
 			currentNode = currentNode.nextNode_;
 		}
-		;
+		
 
 		if (packet.destination_.equals(currentNode.name_)) {
 			result = printDocument(currentNode, packet, report);
@@ -325,7 +324,7 @@ public class Network {
 			} catch (IOException exc) {
 				// just ignore
 			}
-			;
+			
 			result = false;
 		}
 
@@ -360,26 +359,14 @@ public class Network {
 						title = document.message_.substring(startPos + 6, endPos);
 					}
 					;
-					report.write("\tAccounting -- author = '");
-					report.write(author);
-					report.write("' -- title = '");
-					report.write(title);
-					report.write("'\n");
-					report.write(">>> Postscript job delivered.\n\n");
-					report.flush();
+					writeAccounting(report, author, title, "Postscript");
 				} else {
 					title = "ASCII DOCUMENT";
 					if (document.message_.length() >= 16) {
 						author = document.message_.substring(8, 16);
 					}
 					;
-					report.write("\tAccounting -- author = '");
-					report.write(author);
-					report.write("' -- title = '");
-					report.write(title);
-					report.write("'\n");
-					report.write(">>> ASCII Print job delivered.\n\n");
-					report.flush();
+					writeAccounting(report, author, title, "ASCII");
 				}
 				;
 			} catch (IOException exc) {
@@ -397,6 +384,16 @@ public class Network {
 			;
 			return false;
 		}
+	}
+
+	private void writeAccounting(Writer report, String author, String title, String doctype) throws IOException {
+		report.write("\tAccounting -- author = '");
+		report.write(author);
+		report.write("' -- title = '");
+		report.write(title);
+		report.write("'\n");
+		report.write(">>> " + doctype + " Print job delivered.\n\n");
+		report.flush();
 	}
 
 	/**
