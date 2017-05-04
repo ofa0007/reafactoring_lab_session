@@ -225,11 +225,11 @@ public class Network {
 				report.write("\tNode '");
 				report.write(currentNode.name_);
 				report.write("' accepts broadcase packet.\n");
-				logPacketPass(report, currentNode);
+				currentNode.logPacketPass(report);
 			} catch (IOException exc) {
 				// just ignore
 			}
-			
+
 			currentNode = currentNode.nextNode_;
 		} while (!packet.destination_.equals(currentNode.name_));
 
@@ -279,7 +279,6 @@ public class Network {
 		} catch (IOException exc) {
 			// just ignore
 		}
-		
 
 		boolean result = false;
 		Node startNode, currentNode;
@@ -287,15 +286,14 @@ public class Network {
 
 		startNode = (Node) workstations_.get(workstation);
 
-		logPacketPass(report, startNode);
-		
+		startNode.logPacketPass(report);
+
 		currentNode = startNode.nextNode_;
 		while ((!packet.destination_.equals(currentNode.name_)) & (!packet.origin_.equals(currentNode.name_))) {
-			logPacketPass(report, currentNode);
-			
+			currentNode.logPacketPass(report);
+
 			currentNode = currentNode.nextNode_;
 		}
-		
 
 		if (packet.destination_.equals(currentNode.name_)) {
 			result = printDocument(currentNode, packet, report);
@@ -306,22 +304,11 @@ public class Network {
 			} catch (IOException exc) {
 				// just ignore
 			}
-			
+
 			result = false;
 		}
 
 		return result;
-	}
-
-	private void logPacketPass(Writer report, Node node) {
-		try {
-			report.write("\tNode '");
-			report.write(node.name_);
-			report.write("' passes packet on.\n");
-			report.flush();
-		} catch (IOException exc) {
-			// just ignore
-		}
 	}
 
 	private boolean printDocument(Node printer, Packet document, Writer report) {
