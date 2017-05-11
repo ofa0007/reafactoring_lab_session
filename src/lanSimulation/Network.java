@@ -126,7 +126,7 @@ public class Network {
 		if (n == null) {
 			return false;
 		} else {
-			return n.type_ == Node.WORKSTATION;
+			return n instanceof WorkStation;
 		}
 	};
 
@@ -158,7 +158,7 @@ public class Network {
 		iter = nodes_.elements();
 		while (iter.hasMoreElements()) {
 			currentNode = (Node) iter.nextElement();
-			if (currentNode.type_ != Node.WORKSTATION) {
+			if (!(currentNode instanceof WorkStation)) {
 				return false;
 			}
 			;
@@ -171,11 +171,11 @@ public class Network {
 		currentNode = firstNode_;
 		while (!encountered.containsKey(currentNode.name_)) {
 			encountered.put(currentNode.name_, currentNode);
-			if (currentNode.type_ == Node.WORKSTATION) {
+			if (currentNode instanceof WorkStation) {
 				workstationsFound++;
 			}
 			;
-			if (currentNode.type_ == Node.PRINTER) {
+			if (currentNode instanceof Printer) {
 				printersFound++;
 			}
 			;

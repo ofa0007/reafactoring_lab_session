@@ -29,24 +29,7 @@ import lanSimulation.Network;
  * Several types of Nodes exist.
  */
 public class Node {
-	// enumeration constants specifying all legal node types
-	/**
-	 * A node with type NODE has only basic functionality.
-	 */
-	public static final byte NODE = 0;
-	/**
-	 * A node with type WORKSTATION may initiate requests on the LAN.
-	 */
-	public static final byte WORKSTATION = 1;
-	/**
-	 * A node with type PRINTER may accept packages to be printed.
-	 */
-	public static final byte PRINTER = 2;
 
-	/**
-	 * Holds the type of the Node.
-	 */
-	public byte type_;
 	/**
 	 * Holds the name of the Node.
 	 */
@@ -65,8 +48,6 @@ public class Node {
 	 * </p>
 	 */
 	protected Node(byte type, String name) {
-		assert (type >= NODE) & (type <= PRINTER);
-		type_ = type;
 		name_ = name;
 		nextNode_ = null;
 	}
@@ -78,21 +59,17 @@ public class Node {
 	 * </p>
 	 */
 	public Node(String name) {
-		type_ = NODE;
 		name_ = name;
 		nextNode_ = null;
 	}
 
 	/**
-	 * Construct a <em>Node</em> with given #type and #name, and which is linked
+	 * Construct a <em>Node</em> with given #name, and which is linked
 	 * to #nextNode.
 	 * <p>
-	 * <strong>Precondition:</strong> (type >= NODE) & (type <= PRINTER);
 	 * </p>
 	 */
-	public Node(byte type, String name, Node nextNode) {
-		assert (type >= NODE) & (type <= PRINTER);
-		type_ = type;
+	public Node(String name, Node nextNode) {
 		name_ = name;
 		nextNode_ = nextNode;
 	}
